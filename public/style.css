@@ -1,0 +1,125 @@
+/* רקע כללי והגדרות בסיס */
+body {
+  font-family: 'Segoe UI', 'Alef', Arial, sans-serif;
+  direction: rtl;
+  text-align: right;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #e0f7ec, #c8e2ff); /* ירוק בהיר לכחול בהיר */
+  min-height: 100vh;
+}
+
+/* קופסת תוכן מרכזית */
+.scanner-container, .login-container {
+  background: white;
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px 25px;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* כותרות */
+h2, h3, h4 {
+  text-align: center;
+  color: #0b3d91; /* כחול כהה */
+  margin-bottom: 20px;
+}
+
+/* תוויות קלט */
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* שדות קלט */
+input[type="text"],
+input[type="date"],
+input[type="number"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+/* כפתורים */
+button, .upload-button {
+  background-color: #007acc;
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  font-size: 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+
+button:hover, .upload-button:hover {
+  background-color: #005fa3;
+}
+
+/* כפתור העלאת קובץ */
+.upload-button {
+  display: inline-block;
+  text-align: center;
+  margin: 8px 4px;
+}
+
+/* תצוגת מצב */
+.status {
+  margin-top: 15px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.status.success {
+  color: green;
+}
+
+.status.error {
+  color: red;
+}
+
+/* OCR Output */
+#ocrOutput {
+  background-color: #eef;
+  border: 1px dashed #aad;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* תצוגה מקדימה */
+#previewImage {
+  border: 1px solid #ccc;
+  margin-top: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+/* שגיאות */
+.error {
+  color: red;
+  text-align: center;
+}
+
+/* רספונסיביות */
+@media (max-width: 600px) {
+  .scanner-container, .login-container {
+    margin: 20px;
+    padding: 20px;
+  }
+}

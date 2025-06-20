@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>התחברות - סורק חשבוניות</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="login-page">
+  <div class="login-container">
+    <img src="logo.png" alt="לוגו" class="logo" />
+    <h2>כניסה למערכת</h2>
+    <form id="loginForm">
+      <label for="username">שם משתמש</label>
+      <input type="text" id="username" required />
+
+      <label for="password">סיסמה</label>
+      <input type="password" id="password" required />
+
+      <button type="submit">התחבר</button>
+      <p id="errorMsg" class="error"></p>
+    </form>
+  </div>
+
+  <script src="login.js"></script>
+</body>
+</html>

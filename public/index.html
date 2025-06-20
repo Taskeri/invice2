@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>מערכת סריקת חשבוניות</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f5faff;
+      color: #222;
+    }
+    h1 {
+      color: #007acc;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:disabled {
+      background-color: #ccc;
+    }
+    .result {
+      background: #e7f4ff;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>סריקת חשבונית והגשה</h1>
+
+  <label for="file">בחר תמונה / PDF של חשבונית:</label>
+  <input type="file" id="file" accept="image/*,application/pdf">
+
+  <button onclick="processOCR()">העלה וסרוק</button>
+
+  <div class="result" id="result" style="display:none;">
+    <h3>תוצאה:</h3>
+    <label>מספר חשבונית:</label>
+    <input id="invoiceNumber">
+    <label>תאריך:</label>
+    <input id="date">
+    <label>שעה:</label>
+    <input id="time">
+    <label>ספק:</label>
+    <input id="supplier">
+    <label>סה"כ:</label>
+    <input id="total">
+    <label>מע"מ:</label>
+    <input id="vat">
+    <label>פריטים / תיאור:</label>
+    <textarea id="items" rows="3"></textarea>
+    <label>שם מדווח:</label>
+    <input id="uploadedBy" placeholder="שמך המלא">
+    <button onclick="submitInvoice()">שלח ל־Google Sheets</button>
+  </div>
+
+  <script>
+    async function processOCR() {
+      const fileInput = document.getElementById("file");
+      if (!fileInput.files.length) return alert("יש לבחור קובץ קודם");
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = async function () {
+        const base64 = reader.result.split(',')[1];
+
+        const ocrResponse = await fetch("https://api.ocr.space/parse/image", {
+          method: "POST",
+          headers: {
+            "apikey": "helloworld",
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: new URLSearchParams({
+            base64Image: "data:" + file.type + ";base64," + base64,
+            language: "eng"
+          })
+        });
+
+        const ocrData = await ocrResponse.json();
+        const rawText = ocrData?.ParsedResults?.[0]?.ParsedText;
+
+        if (!rawText) return alert("לא זוהה טקסט מהקובץ");
+
+        const extract = await fetch("/extract-fields", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ocrText: rawText })
+        });
+
+        const data = await extract.json();
+        if (!data.success) return alert("שגיאה בזיהוי הנתונים");
+
+        const f = data.fields;
+        document.getElementById("invoiceNumber").value = f.invoiceNumber || "";
+        document.getElementById("date").value = f.date || "";
+        document.getElementById("time").value = f.time || "";
+        document.getElementById("supplier").value = f.supplier || "";
+        document.getElementById("total").value = f.total || "";
+        document.getElementById("vat").value = f.vat || "";
+
+        document.getElementById("result").style.display = "block";
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    async function submitInvoice() {
+      const payload = {
+        invoiceNumber: document.getElementById("invoiceNumber").value,
+        date: document.getElementById("date").value,
+        time: document.getElementById("time").value,
+        supplier: document.getElementById("supplier").value,
+        total: document.getElementById("total").value,
+        vat: document.getElementById("vat").value,
+        items: document.getElementById("items").value,
+        uploadedBy: document.getElementById("uploadedBy").value || "לא צויין"
+      };
+
+      const { date, supplier, invoiceNumber, total, vat, items, uploadedBy } = payload;
+
+      const submit = await fetch("/submit-invoice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date, supplier, invoiceNumber, total, vat, items, uploadedBy })
+      });
+
+      const res = await submit.json();
+      alert(res.message);
+    }
+  </script>
+
+</body>
+</html>

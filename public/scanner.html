@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>סריקת חשבונית</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="scanner-page">
+  <div class="scanner-container">
+    <h2>סריקת חשבונית</h2>
+
+    <h4>בחר/י כיצד לטעון את החשבונית:</h4>
+    <label class="upload-button">
+      📷 צילום עם מצלמה
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden />
+    </label>
+    <label class="upload-button">
+      🗂️ העלאת קובץ
+      <input type="file" id="uploadInput" accept="image/*" hidden />
+    </label>
+
+    <div id="previewContainer">
+      <h4>תצוגה מקדימה:</h4>
+      <img id="previewImage" style="max-width: 100%; max-height: 300px; display: none;" />
+    </div>
+
+    <div id="processing" style="display: none;">מעבד תמונה...</div>
+    <div id="ocrOutput"></div>
+
+    <p style="font-size: 14px; color: gray;">
+      🧠 שדות סומנו אוטומטית לפי OCR. שדות ריקים – נא למלא ידנית.
+    </p>
+
+    <form id="invoiceForm" class="hidden">
+      <label>שם ספק:<input type="text" id="supplier" placeholder="לא זוהה - נא למלא" /></label>
+      <label>תאריך:<input type="date" id="date" /></label>
+      <label>מס' חשבונית:<input type="text" id="invoiceNumber" /></label>
+      <label>סכום כולל:<input type="number" id="total" /></label>
+      <label>מע"מ:<input type="number" id="vat" /></label>
+      <label>פריטים:<textarea id="items" rows="3"></textarea></label>
+      <button type="submit">שלח</button>
+      <p id="submitStatus" class="status"></p>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
+  <script src="scanner.js"></script>
+</body>
+</html>
